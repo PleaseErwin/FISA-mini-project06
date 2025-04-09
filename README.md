@@ -117,50 +117,54 @@ Business Research Insights의 시장 조사에 따르면 분산형 데이터베�
 
 - 마스터-레플리카 구조: 마스터 서버에 문제가 생겨도 레플리카 서버를 통해 지속적인 서비스 제공 가능
 
-
-
-
-## 샤딩이란?
-샤딩은 각 DB 서버에서 데이터를 분할하여 저장하는 방식이다. 트래픽을 분산하여 DB 서버의 부하를 줄일 수 있다.
 <br>
+
+# 샤딩 데모,고도화
 
 ## 샤딩 구조
 
 ![ppt1](https://github.com/user-attachments/assets/491ed798-e186-4d32-b819-a42431201cda)
 <br>
-<b>mysql db 환경에서 range sharding을 구현하려고 한다.</b><br>
+<b>mysql db 환경에서 range sharding을 구현하려고 합니다.</b><br>
 <br>
 
 | 1번 컴퓨터 |  2번 컴퓨터 |  3번 컴퓨터 | 4번 컴퓨터|
 |:------:|:------:|:------:|:------:|
 | 2 ~ 30대 | 4 ~ 50대 | 6 ~ 70대 | 80대 + 기타 |
 
-고객의 카드 사용 현황 데이터를 나이대별로 나누어 저장한다.<br>
+고객의 카드 사용 현황 데이터를 나이대별로 나누어 저장합니다.<br>
 
 ![ppt2](https://github.com/user-attachments/assets/854cee79-ea09-41e4-b356-69544e2b714d)
 <br>
-원격과 로컬 DB간에 링크를 생성해서 원격 테이블을 로컬처럼 사용할 수 있도록 하는 federated DB 엔진 사용<br>
-두 DB간에 링크를 만들기 위해서는 메인 컴퓨터와 원격 컴퓨터에 있는 DB 테이블의 스키마가 같아야 한다.<br>
+- 원격과 로컬 DB간에 링크를 생성해서 원격 테이블을 로컬처럼 사용할 수 있도록 하는 <b>federated DB 엔진</b> 사용<br>
+- 두 DB간에 링크를 만들기 위해서는 메인 컴퓨터와 원격 컴퓨터에 있는 DB 테이블의 스키마가 같아야 함<br><br>
+
 사전에 미리 mysqldump로 생성한 원본 테이블의 스키마 파일을 각 컴퓨터에 scp로 전송하고, ssh 원격 접속하여 빈 테이블을 생성해 준다.<br><br>
 
 ## Main Script File
-```
-# sharding.sh
 
-```
-테이블의 데이터가 저장된 ibd 파일의 크기를 2초마다 가져와서 타겟 사이즈인 1.7기가를 넘을 경우 자동으로 서브 스크립트 파일들을 백그라운드로 실행시킨다.
+![sharding0sh](https://github.com/user-attachments/assets/aa4401bc-ee05-4a67-a98c-16f961b0aae0)
+<br>
+테이블의 데이터가 저장된 ibd 파일의 크기를 2초마다 가져와서 타겟 사이즈인 1.7기가를 넘을 경우 자동으로 서브 스크립트 파일들을 백그라운드로 실행시킵니다.
 
 ## Sub Script File
-```
-# shardingN.sh
 
-```
-메인 스크립트 파일 내부에서 실행시키는 스크립트로, 메인 DB에 federated 엔진을 탑재한 테이블을 생성하고 connection으로 각각의 원격 DB 테이블들과 연결한 뒤, 레인지 샤딩에 맞게 일정 나이대 범위의 데이터를 삽입한다.
+![sharding1sh_2](https://github.com/user-attachments/assets/240a31eb-9a68-409b-a05e-1d3803a755cc)
+<br>
+![sharding1sh](https://github.com/user-attachments/assets/16fadc2a-f259-4fdd-9995-76ae3037e233)
+<br>
+메인 스크립트 파일 내부에서 실행시키는 스크립트입니다. 메인 DB에 federated 엔진을 탑재한 테이블을 생성하고 connection으로 각각의 원격 DB 테이블들과 연결한 뒤, 레인지 샤딩에 맞게 일정 나이대 범위의 데이터를 삽입합니다.
 <br><br>
 
 ## 조회 성능
 
+![image](https://github.com/user-attachments/assets/c7e74e09-0cab-4f52-a007-694e71983ede)
 <br>
+- 메인 DB 2 ~ 30대 데이터 조회 -> 5초<br>
+- 1번 컴퓨터 DB 2 ~ 30대 데이터 조회 -> 3초<br>
+<br>
+이처럼 적은 양의 데이터인데도 샤딩이 유의미한 차이를 만든 것을 알 수 있었습니다.
+<br><br>
 
 ## 레플리카 데모,고도화
 
