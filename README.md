@@ -1,4 +1,25 @@
-# 분산형 데이터베이스를 활용한 대용량 데이터 처리 최적화
+# Shaplica
+
+
+## 🤝 Team Members
+| <img src="https://github.com/kcklkb.png" width="200px"> | <img src="https://github.com/SuGeunJee.png" width="200px"> | <img src="https://github.com/PleaseErwin.png" width="200px"> | <img src="https://github.com/unoYoon.png" width="200px"> |
+| :---: | :---: | :---: | :---: |
+| [김창규](https://github.com/kcklkb) | [지수근](https://github.com/SuGeunJee) | [서소원](https://github.com/PleaseErwin) | [윤원호](https://github.com/unoYoon) |
+
+
+# 🛠 Tech Stack
+
+|  **분류**   |   **기술 스택**   |
+|--------------|-------------|
+| **데이터베이스** | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white) 
+| **분산 DB 설계** | ![Sharding](https://img.shields.io/badge/Sharding-%23007ACC?style=for-the-badge&logo=databricks&logoColor=white) ![Replication](https://img.shields.io/badge/Replication-%23999999?style=for-the-badge&logo=amazonrds&logoColor=white) |
+| **협업툴**     | ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white) ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white) ![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white) ![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white) |
+| **서버**  | ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white) ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black) |
+
+## System & Develop Architecture
+
+![image](https://github.com/user-attachments/assets/9c2c2551-7fb8-4a8f-ad3b-963711cd2a05)
+
 
 ## 주제 선정 배경
 본 프로젝트는 실제 업무 환경에서 직면한 대용량 데이터 처리 문제를 해결하기 위해 시작되었습니다. 현재 시스템에서 약 540만건의 카드 데이터를 MySQL 쿼리로 처리하는 과정에서 심각한 성능 저하 문제가 발생했습니다.
@@ -41,25 +62,66 @@ Business Research Insights의 시장 조사에 따르면 분산형 데이터베�
 - 시스템 안정성 향상: 부하 분산을 통한 안정적 운영
 - 운영 비용 최적화: 효율적인 시스템 운영으로 비용 절감
 
+<br>
 
 **본 프로젝트를 통해 분산형 데이터베이스 기술을 실제 환경에 적용하여 540만건의 데이터를 효율적으로 처리하고, 사용자 경험을 개선하는 방안을 제시하고자 합니다.**
 
 
 <br>
 
+## 📚 분산형 데이터베이스 개념 정리
+
+### 📌 분산형 데이터베이스란?
+
+- 하나의 데이터베이스 관리 시스템이 여러 서버에 연결된 저장 장치를 제어하여 데이터를 분산 저장하고 관리하는 구조입니다.
+
+- 확장성과 성능을 높이기 위해 데이터는 여러 서버에 나누어 저장되며, 대용량 처리에 효과적입니다.
+
+### 🔹 파티셔닝 (Partitioning)
+
+- 단일 데이터베이스 내의 데이터를 나누는 기술로, 성능 향상과 관리 편의성을 위한  기법입니다.
+
+- 분산형 데이터베이스에서는 샤딩(Sharding)과 함께 사용되어 데이터를 효과적으로 분산 저장합니다.
+
+#### 🔸 수직형 파티셔닝 (Vertical Partitioning)
+
+- 속성(Column) 기준 분할
+
+- 테이블의 열을 나누어 서로 다른 테이블로 분리
+
+#### 🔸 수평형 파티셔닝 (Horizontal Partitioning)
+
+- 행(Row) 기준 분할
+
+- 전체 데이터를 조건(예: 지역, ID 범위 등)에 따라 여러 테이블로 나누어 저장
+
+### 🔹 샤딩 (Sharding)
+
+- 데이터를 여러 서버에 분산하여 저장하는 기술입니다. 파티셔닝의 일종으로, 분산 데이터베이스의 핵심 개념입니다.
+
+#### 🔸 레인지 샤딩 (Range Sharding)
+
+- 특정 범위(예: 날짜, ID 범위 등) 기준으로 데이터를 분할하여 각 샤드(서버)에 저장
+
+#### 🔸 해시 샤딩 (Hash Sharding)
+
+- 해시 함수(예: hash(ID) % 서버 수)를 사용해 데이터를 균등하게 분산 저장
+
+- 부하 분산 및 확장성에 용이
+
+### 🔹 레플리카 (Replica)
+
+- 하나의 데이터를 여러 서버에 복제하여 저장하는 기술입니다.
+
+- 장애 대응, 고가용성, 백업 목적
+
+- 마스터-레플리카 구조: 마스터 서버에 문제가 생겨도 레플리카 서버를 통해 지속적인 서비스 제공 가능
+
+
+
+
 ## 샤딩이란?
 샤딩은 각 DB 서버에서 데이터를 분할하여 저장하는 방식이다. 트래픽을 분산하여 DB 서버의 부하를 줄일 수 있다.
-<br>
-
-## 샤딩의 종류
-
-<br>
-
-### 레인지 샤딩
-블라블라블라
-### 해쉬 샤딩
-블라블라블라
-
 <br>
 
 ## 샤딩 구조
