@@ -160,5 +160,78 @@ Business Research Insights의 시장 조사에 따르면 분산형 데이터베�
 
 ## 조회 성능
 
+<br>
+
+## 레플리카 데모,고도화
+
+
+### 재해 방지의 관점에서 단순 백업 목적의 레플리카 구현
+- mysql 메인 서버에서 mysql replica 서버로 크론탭과 스크립트 활용하여 레플리케이션 진행
+  
+- 메인 서버 DB와 동일한 스키마의 replica 서버 DB로 540만개 데이터 이동
+  
+- 스크립트 파일 구조
+  <br>(1) DB정보 파일(replicaconfig4.properties)
+  <br>보안을 위해 DB정보를 properties에 따로 저장
+  <br>![1 db정보파일](https://github.com/user-attachments/assets/8d7655b6-f7b2-4984-8eac-61c99028b498)
+  <br>(2) SQL 파일(replica4.sh)
+  <br>실제 쿼리를 실행하는 파일
+  <br>![2 sql 파일](https://github.com/user-attachments/assets/e9bfda2e-3005-45bd-9aee-9b3d8616fa0f)
+  <br>(3) 실행 파일(replicatest.sh)<br>작업소요시간을 기록하며 SQL 파일을 실행
+  <br>![3 실행 파일](https://github.com/user-attachments/assets/192efd65-8143-499d-9fe2-30b260b14df2)
+
+- 레플리케이션 실행 결과
+  <br>(1)메인서버
+  <br>![4 메인서버](https://github.com/user-attachments/assets/4b3b3acb-fc8f-4e82-847d-50e1471844f1)
+  <br>(2)replica서버
+  <br>![5 replica서버](https://github.com/user-attachments/assets/65ca1a14-7c32-4fbc-9ca0-fc4194918a35)
+  <br>(3)스크립트 실행
+  <br>![6 스크립트실행](https://github.com/user-attachments/assets/af662d5e-9327-4eee-a3e9-e74a1a29dcaf)
+  <br>(4)결과 확인
+  <br>![7 결과확인](https://github.com/user-attachments/assets/252ea5a7-453d-4f7a-a25d-415ac9b9d095)
+
+- 크론탭 설정
+  <br>특정 시간이 되면 자동으로 실행될 수 있도록 설정
+  <br>로그기록을 통해 작업결과 확인 가능
+  <br>![8 크론탭설정](https://github.com/user-attachments/assets/0f69a8da-7039-45f4-9b5d-17341d5f4f41)
+  <br>![9 크론탭실행로그](https://github.com/user-attachments/assets/f6f23a10-91c0-4f12-896f-427fa5048c32)
+
+### mysql 실시간 데이터 동기화 레플리카 구현
+- 메인/replica 서버 cnf파일 설정 설정
+  <br>(1)메인 서버 cnf 파일
+  <br>메인 서버임을 인식할 수 있는 id값과 replica 서버 지정
+  <br>모든 데이터 변경사항이 binary log 파일에 기록되도록 활성화
+  <br>(2)replica 서버 cnf 파일
+  <br>binary log를 받아 저장하고 처리할 수 있도록 활성화
+  <br>![10 메인,replica서버 cnf파일](https://github.com/user-attachments/assets/09264690-32b7-4fb6-a58a-e4ca27f6a6f5)
+
+- 권한을 가진 마스터 계정 생성 및 binary-로그파일명과 위치 확인
+- 위 정보 replica 서버에 입력
+  <br>![11 메인,replica서버 cnf파일](https://github.com/user-attachments/assets/0c852740-95f2-401f-8b10-e3967d1e775e)
+ 
+- 레플리케이션 실행 결과
+<br>(1)현재 replica 서버에 20만개 데이터 존재
+<br>![12 실행결과-1](https://github.com/user-attachments/assets/7c190286-3143-4ad5-9c1d-013f2acc6f76)
+<br>(2)실시간 데이터 동기화 설정
+<br>![13 실행결과-2](https://github.com/user-attachments/assets/bdf9e098-5f16-4b77-8a0a-1e08a7b4ddec)
+<br>(3)메인 서버에 10만개 새로운 데이터 입력
+<br>![14 실행결과-3](https://github.com/user-attachments/assets/bd86a434-3438-4351-8fbc-d461ce95bddb)
+<br>(4)replica 서버에 실시간 데이터 동기화 확인
+<br>![15 실행결과](https://github.com/user-attachments/assets/577780ee-c053-48ca-86be-2b2bd3ee720f)
+<br>![16 실행결과](https://github.com/user-attachments/assets/e4749320-3991-4a77-a701-5ed0506df7a2)
+
+### 4-3)레플리케이션 후 부하 테스트를 통해 부하 감소 검증
+- 메인/replica 서버에 530만개 데이터 입력 후 부하테스트 진행
+- 실행 결과
+<br>(1) 1개의 DB에 4명이 동시에 동일한 조회 쿼리 테스트
+<br>-> 평균 응답시간 약 14초
+<br>![17 부하테스트](https://github.com/user-attachments/assets/95f0d49b-9d69-4e22-af62-2b8f2ed51739)
+<br>(2) 메인 서버에 2명 / replica 서버에 2명 분산 후 동시에 동일한 조회 쿼리 테스트
+<br>-> 평균 응답시간 9초, 5초
+<br>![18 부하테스트](https://github.com/user-attachments/assets/b2e37c2a-03ab-4ba1-acbd-656e9f002ccc)
+
+<br>
+
+
 
 
