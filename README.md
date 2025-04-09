@@ -192,7 +192,7 @@ Business Research Insights의 시장 조사에 따르면 분산형 데이터베�
   <br>(3)스크립트 실행
   <br>![6 스크립트실행](https://github.com/user-attachments/assets/af662d5e-9327-4eee-a3e9-e74a1a29dcaf)
   <br>(4)결과 확인
-  <br>![7 결과확인](https://github.com/user-attachments/assets/252ea5a7-453d-4f7a-a25d-415ac9b9d095)
+  <br>![7 결과확인](https://github.com/user-attachments/assets/cc200e6f-90c0-47df-97b4-f88e5c2b75bc)
 
 - 크론탭 설정
   <br>특정 시간이 되면 자동으로 실행될 수 있도록 설정
